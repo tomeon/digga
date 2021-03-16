@@ -25,19 +25,21 @@
       home.inputs.nixpkgs.follows = "nixos";
       naersk.url = "github:nmattia/naersk";
       naersk.inputs.nixpkgs.follows = "override";
+      nix.inputs.nixpkgs.follows = "nixos";
       nixos-hardware.url = "github:nixos/nixos-hardware";
       utils.url = "github:numtide/flake-utils/flatten-tree-system";
-      srcs.url = "path:./pkgs";
+      pkgs.url = "path:./pkgs";
+      pkgs.inputs.nixpkgs.follows = "nixos";
     };
 
-  outputs = inputs@{ deploy, nixos, nur, self, utils, ... }:
+  outputs = inputs@{ deploy, nixos, nur, nix, self, utils, ... }:
     let
       inherit (self) lib;
       inherit (lib) os;
 
       extern = import ./extern { inherit inputs; };
 
-      pkgs' = os.mkPkgs { inherit self; };
+      pkgs' = os.mkPkgs;
 
       outputs =
         let
@@ -58,7 +60,7 @@
           overlay = import ./pkgs;
           overlays = lib.pathsToImportedAttrs (lib.pathsIn ./overlays);
 
-          lib = import ./lib { inherit nixos pkgs; };
+          lib = import ./lib { inherit nixos pkgs self; };
 
           templates.flk.path = ./.;
           templates.flk.description = "flk template";
@@ -80,16 +82,14 @@
         let pkgs = pkgs'.${system}; in
         {
           packages = utils.lib.flattenTreeSystem system
-            (os.mkPackages {
-              inherit self pkgs;
-            });
+            (os.mkPackages { inherit pkgs; });
 
           devShell = import ./shell {
             inherit self system;
           };
 
           legacyPackages.hmActivationPackages =
-            os.mkHomeActivation { inherit self; };
+            os.mkHomeActivation;
         }
       );
     in
