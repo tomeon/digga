@@ -560,7 +560,7 @@
         "wii-u-gc-adapter": "wii-u-gc-adapter"
       },
       "locked": {
-        "narHash": "sha256-YSuAYMtO3smakE/9MbCZ5KGu8u8L0C/m804nMFz/RWA=",
+        "narHash": "sha256-U1NKg2Rj7nJ2fNQiwAJjiD9zoYQ6eSRHA/viRXlkKbw=",
         "path": "./pkgs",
         "type": "path"
       },
