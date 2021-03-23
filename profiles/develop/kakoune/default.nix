@@ -6,7 +6,7 @@
     editorconfig-core-c
     kak-lsp
     kakoune-config
-    kakoune-unwrapped
+    kakoune
     nixpkgs-fmt
     python3Packages.python-language-server
     rustup
@@ -19,10 +19,12 @@
   environment.etc = {
     "xdg/kak-lsp/kak-lsp.toml".source = ./kak-lsp.toml;
     "xdg/kak/kakrc".source = ./kakrc;
-    "xdg/kak/autoload/plugins".source = ./plugins;
+    "xdg/kak/autoload/plugins-config".source = ./plugins;
     "xdg/kak/autoload/lint".source = ./lint;
     "xdg/kak/autoload/lsp".source = ./lsp;
     "xdg/kak/autoload/default".source =
-      "${pkgs.kakoune-unwrapped}/share/kak/rc";
+      "${pkgs.kakoune}/share/kak/rc";
+    "xdg/kak/autoload/plugins".source =
+      "${pkgs.kakoune}/share/kak/autoload/plugins";
   };
 }

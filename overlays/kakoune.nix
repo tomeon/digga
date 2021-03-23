@@ -1,8 +1,7 @@
 final: prev: {
   kakoune = prev.kakoune.override {
-    configure.plugins = with final.kakounePlugins; [
+    plugins = with final.kakounePlugins; [
       kak-fzf
-      kak-auto-pairs
       kak-buffers
       (kak-powerline.overrideAttrs
         (self:
@@ -13,10 +12,8 @@ final: prev: {
     ];
   };
 
-  fzf = prev.skim;
-
   # wrapper to specify config dir
   kakoune-config = prev.writeShellScriptBin "k" ''
-    KAKOUNE_CONFIG_HOME=/etc/xdg/kak exec ${final.kakoune}/bin/kak "$@"
+    KAKOUNE_CONFIG_DIR=/etc/xdg/kak exec ${final.kakoune}/bin/kak "$@"
   '';
 }
