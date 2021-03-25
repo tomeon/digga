@@ -62,11 +62,6 @@ in
     temperature.night = 3200;
   };
 
-  location = {
-    latitude = 38.833881;
-    longitude = -104.821365;
-  };
-
   systemd.user.targets.sway-session = {
     enable = true;
     description = "sway compositor session";
