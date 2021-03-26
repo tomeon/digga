@@ -57,10 +57,14 @@ in
     set -g @override_copy_command 'wl-copy'
   '';
 
-  services.redshift = {
-    enable = true;
-    temperature.night = 3200;
-  };
+  services.redshift = lib.mkIf
+    ((builtins.tryEval config.location.latitude).success
+      && (builtins.tryEval config.location.longitude).success
+    )
+    {
+      enable = true;
+      temperature.night = 3200;
+    };
 
   systemd.user.targets.sway-session = {
     enable = true;
