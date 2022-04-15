@@ -1,0 +1,64 @@
+#!/bin/sh
+
+set -eu
+
+if [ -z "${PRJ_ROOT:-}" ]; then
+  if ! PRJ_ROOT="$(git rev-parse --show-toplevel 2>/dev/null)"; then
+    # shellcheck disable=SC2016
+    printf 1>&2 -- '%s: %s. %s. %s.\n' \
+      "${0##*/}" 'unable to locate your project root ($PRJ_ROOT)' \
+      'bud relies on the project root for locating the bootstrap ISO' \
+      'Aborting'
+
+    exit 1
+  fi
+fi
+
+boostrapIsoRequireHost() {
+  if [ "$#" -lt 1 ]; then
+    printf 1>&2 -- 'Error: missing required <host> argument.\n' "${0##*/}"
+    bootstrapIsoHelp 1
+  fi
+}
+
+bootstrapIsoBuild() {
+  boostrapIsoRequireHost "$@" || return
+
+  local host="$1"
+  shift
+
+  # XXX the way nixos-generate handles flake specifications requires that we do
+  # not quote the host as we would with, e.g.:
+  #   nix build ".#nixosConfigurations.\"my.host.name\".config.system.build.toplevel"
+  nixos-generate "$@" --format bootstrap-iso --flake "${PRJ_ROOT}#${host}"
+}
+
+bootstrapIsoBurn() {
+  boostrapIsoRequireHost "$@" || return
+  bud="$(command -v bud)" || return
+  bootstrapIsoBuild "$@" --out-link "${PRJ_ROOT?}/result" || return
+  sudo -E "$bud" burn
+}
+
+bootstrapIsoHelp() {
+  printf 1>&2 -- 'Usage: %s {build,burn,help} <host> [<nixos-generate-arg> ...]\n' "${0##*/}"
+  return "${1:-0}"
+}
+
+cmd="${1:-}"
+shift 2>/dev/null || :
+
+case "$cmd" in
+  build)
+    bootstrapIsoBuild "$@"
+    ;;
+  burn)
+    bootstrapIsoBurn "$@"
+    ;;
+  help)
+    bootstrapIsoHelp
+    ;;
+  *)
+    bootstrapIsoHelp 1
+    ;;
+esac

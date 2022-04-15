@@ -11,7 +11,8 @@
       nixos.url = "github:nixos/nixpkgs/nixos-21.11";
       latest.url = "github:nixos/nixpkgs/nixos-unstable";
 
-      digga.url = "github:divnix/digga";
+      #digga.url = "github:divnix/digga";
+      digga.url = "path:/home/matt/git/packaging/nix/digga";
       digga.inputs.nixpkgs.follows = "nixos";
       digga.inputs.nixlib.follows = "nixos";
       digga.inputs.home-manager.follows = "home";

@@ -48,8 +48,14 @@ in
   ++ lib.optional
     (system != "i686-linux")
     (devos cachix)
-  ++ lib.optional
-    (system != "aarch64-darwin")
-    (devos inputs.nixos-generators.defaultPackage.${pkgs.system})
   ;
+
+  # digga-supplied extensions to nixos-generators.  Provides the
+  # "bootstrap-iso" nixos-generators format, plus the "bootstrap-iso" wrapper
+  # command.
+  digga.nixos-generators = {
+    enable = pkgs.system != "aarch64-darwin";
+    category = "devos";
+    package = inputs.nixos-generators.defaultPackage.${pkgs.system};
+  };
 }

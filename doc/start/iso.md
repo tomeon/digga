@@ -1,9 +1,12 @@
 # ISO
 
-Making and writing an installable iso for `hosts/bootstrap.nix` is as simple as:
+Making and writing an installable iso for a host is as simple as
+entering the devshell and running `boostrap-iso burn <host>`.  For instance, to
+burn an iso for the host defined in `hosts/bootstrap.nix`, run:
+
 ```sh
-bud build bootstrap bootstrapIso
-sudo -E $(which bud) burn
+nix develop
+bootstrap-iso burn bootstrap # note: uses sudo
 ```
 
 This works for any host.

@@ -116,7 +116,8 @@
 
       # a little extra service ...
       overlays = import ./overlays { inherit inputs; };
-      nixosModules = import ./modules;
+      nixosModules = import ./modules/nixos;
+      devshellModules = import ./modules/devShell;
 
       defaultTemplate = self.templates.devos;
       templates.devos.path = ./examples/devos;
