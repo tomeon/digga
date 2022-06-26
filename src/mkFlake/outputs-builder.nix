@@ -3,6 +3,8 @@
 config: channels:
 let
 
+  packages = flake-utils-plus.lib.exportPackages config.self.overlays channels;
+
   pkgs = channels.${config.nixos.hostDefaults.channelName};
   system = pkgs.system;
 
@@ -44,13 +46,12 @@ let
 in
 {
 
-  inherit homeConfigurationsPortable;
-
-  packages = flake-utils-plus.lib.exportPackages self.overlays channels;
+  inherit packages homeConfigurationsPortable;
 
   devShell =
     let
-      eval = import "${devshell}/modules" pkgs;
+      #eval = import "${devshell}/modules" pkgs;
+      eval = import "${devshell}/modules" packages;
       configuration = {
         name = lib.mkDefault config.nixos.hostDefaults.channelName;
         imports = config.devshell.modules ++ config.devshell.exportedModules;
